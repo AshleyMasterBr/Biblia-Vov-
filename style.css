@@ -1,0 +1,106 @@
+/* RESET BÁSICO */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+
+body {
+    background-color: #f4f4f4; /* Cinza clarinho (descansa a vista) */
+    color: #333;
+    padding-bottom: 50px;
+}
+
+/* CABEÇALHO */
+header {
+    background-color: #2c3e50; /* Azul Escuro Legado */
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+header h1 { font-size: 24px; }
+header p { font-size: 14px; opacity: 0.8; margin-top: 5px; }
+
+/* LISTA DE LIVROS */
+.container {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espaço entre os botões */
+}
+
+.card-livro {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 22px; /* LETRA GRANDE */
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    cursor: pointer;
+    border-left: 5px solid #3498db; /* Detalhe azul */
+}
+
+.card-livro:active {
+    background-color: #e0e0e0; /* Efeito visual ao tocar */
+}
+
+/* TELA DE LEITURA (Sobrepõe tudo) */
+.leitor-tela {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #fffbe6; /* Cor de Papel Antigo (Sépia claro) */
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+}
+
+.escondido { display: none; }
+
+.barra-topo {
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.btn-voltar {
+    background: none;
+    border: 1px solid white;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.conteudo-texto {
+    flex: 1; /* Ocupa o espaço que sobra */
+    padding: 25px;
+    overflow-y: auto; /* Permite rolar o texto */
+    font-size: 22px; /* LETRA GIGANTE PRA LEITURA */
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.botoes-navegacao {
+    padding: 15px;
+    background: #eee;
+    display: flex;
+    justify-content: space-between;
+}
+
+.botoes-navegacao button {
+    padding: 15px 30px;
+    font-size: 18px;
+    background: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
