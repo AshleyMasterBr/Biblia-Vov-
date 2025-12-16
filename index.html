@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bíblia da Vovó</title>
     
+    <link rel="manifest" href="./manifest.json">
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
 
     <style>
@@ -134,8 +136,8 @@
         <h1>📖 Bíblia da Vovó</h1>
         
         <div class="tabs">
-            <button class="tab-btn active" onclick="mudarAba('leitura')">Leitura Completa</button>
-            <button class="tab-btn" onclick="mudarAba('dia')">Palavra do Dia</button>
+            <button class="tab-btn active" onclick="mudarAba('leitura', event)">Leitura Completa</button>
+            <button class="tab-btn" onclick="mudarAba('dia', event)">Palavra do Dia</button>
         </div>
     </header>
 
@@ -149,8 +151,8 @@
             <button class="action-btn" onclick="buscarCapitulo()">Ler</button>
         </div>
         
-        <div id="texto-biblia" class="display-box">
-            <div style="text-align: center; color: #888;">Selecione um livro e clique em Ler.</div>
+        <div id="texto-biblia" class="display-box" style="background: #fff; padding: 20px; border-radius: 15px;">
+            <div style="text-align: center; color: #888;">Selecione um livro acima e clique em Ler.</div>
         </div>
 
         <div class="nav-chapters hidden" id="nav-chapters">
@@ -160,7 +162,7 @@
     </div>
 
     <div id="aba-dia" class="conteudo-aba hidden" style="text-align: center;">
-        <div id="texto-dia" style="background: #fff; padding: 30px; border-radius: 15px; font-size: 1.4rem;">
+        <div id="texto-dia" style="background: #fff; padding: 30px; border-radius: 15px; font-size: 1.4rem; text-align: left;">
             Clique abaixo para receber uma palavra.
         </div>
         <br>
@@ -197,7 +199,8 @@
         // Inicialização
         window.onload = () => {
             carregarLivros();
-            gerarPalavraDoDia(); // Já deixa uma pronta
+            // Pré-carrega uma palavra do dia
+            gerarPalavraDoDia(); 
         };
 
         // Preenche o Select de Livros
@@ -205,20 +208,20 @@
             const selLivro = document.getElementById('sel-livro');
             livrosBiblia.forEach((livro, index) => {
                 const option = document.createElement('option');
-                option.value = index; // Usamos o índice para facilitar
+                option.value = index; 
                 option.text = livro.nome;
                 selLivro.appendChild(option);
             });
             atualizarCapitulos();
         }
 
-        // Atualiza o Select de Capítulos baseado no livro
+        // Atualiza o Select de Capítulos
         function atualizarCapitulos() {
             const indexLivro = document.getElementById('sel-livro').value;
             const qtdCaps = livrosBiblia[indexLivro].caps;
             const selCap = document.getElementById('sel-capitulo');
             
-            selCap.innerHTML = ""; // Limpa anteriores
+            selCap.innerHTML = ""; 
             for(let i=1; i<=qtdCaps; i++){
                 const opt = document.createElement('option');
                 opt.value = i;
@@ -235,38 +238,35 @@
             const display = document.getElementById('texto-biblia');
             const nav = document.getElementById('nav-chapters');
 
-            display.innerHTML = '<div class="loading">📖 Abrindo a Bíblia...</div>';
+            display.innerHTML = '<div class="loading">📖 Buscando texto sagrado...</div>';
             nav.classList.add('hidden');
-
-            // Usando API pública (bible-api.com) - Tradução Almeida
-            // Nota: Nomes com acento as vezes precisam de ajuste na API, mas essa costuma ser inteligente.
-            // Vamos formatar para inglês ou usar mapeamento se falhar, mas vamos tentar direto.
             
-            // Mapeamento simples para nomes em inglês que a API aceita melhor se der erro
-            // Mas a API 'almeida' aceita portugues na maioria. Vamos testar.
-            
+            // API PÚBLICA (Almeida)
             const url = `https://bible-api.com/${nomeLivro}+${capitulo}?translation=almeida`;
 
             try {
                 const response = await fetch(url);
-                if(!response.ok) throw new Error("Erro na conexão");
+                if(!response.ok) throw new Error("Erro API");
                 const data = await response.json();
 
-                let htmlContent = `<h2>${nomeLivro} ${capitulo}</h2>`;
+                let htmlContent = `<h2 style="color:var(--accent-color); margin-top:0;">${nomeLivro} ${capitulo}</h2>`;
                 
                 data.verses.forEach(v => {
-                    htmlContent += `<span class="versiculo"><span class="v-num">${v.verse}</span> ${v.text}</span>`;
+                    htmlContent += `<span class="versiculo"><span class="v-num">${v.verse}</span>${v.text} </span>`;
                 });
 
                 display.innerHTML = htmlContent;
                 nav.classList.remove('hidden');
                 
-                // Rola para o topo do texto
-                display.scrollIntoView({behavior: "smooth"});
+                // Rola para o topo do leitor
+                document.getElementById('display-area').scrollIntoView({behavior: "smooth"});
 
             } catch (error) {
                 console.error(error);
-                display.innerHTML = `<div class="error">Não foi possível carregar o texto agora.<br>Verifique a internet.</div>`;
+                display.innerHTML = `<div style="color:red; text-align:center; padding:20px;">
+                    Não foi possível carregar o texto.<br>
+                    Verifique sua conexão com a internet.
+                </div>`;
             }
         }
 
@@ -274,51 +274,46 @@
             const selCap = document.getElementById('sel-capitulo');
             let novoCap = parseInt(selCap.value) + delta;
             
-            // Verifica limites (simplificado)
             if(novoCap > 0 && novoCap <= selCap.options.length) {
                 selCap.value = novoCap;
                 buscarCapitulo();
             } else {
-                alert("Fim do livro ou início.");
+                // Lógica simples: não troca de livro automaticamente pra não confundir a vovó
+                alert("Fim deste livro.");
             }
         }
 
-        // PALAVRA DO DIA (Aleatório)
+        // PALAVRA DO DIA
         async function gerarPalavraDoDia() {
             const display = document.getElementById('texto-dia');
             display.innerHTML = '<div class="loading">Buscando inspiração...</div>';
 
-            // Sorteia livro e capitulo
             const rLivro = livrosBiblia[Math.floor(Math.random() * livrosBiblia.length)];
             const rCap = Math.floor(Math.random() * rLivro.caps) + 1;
-            const rVerso = 1; // Simplificação: pega o verso 1 ou aleatório da API
 
             const url = `https://bible-api.com/${rLivro.nome}+${rCap}?translation=almeida`;
 
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                
-                // Pega um verso aleatório desse capítulo
                 const versoAleatorio = data.verses[Math.floor(Math.random() * data.verses.length)];
 
                 display.innerHTML = `
                     <h2 style="margin-top:0; color:var(--accent-color)">${rLivro.nome} ${rCap}:${versoAleatorio.verse}</h2>
-                    <p>"${versoAleatorio.text}"</p>
+                    <p style="font-style: italic;">"${versoAleatorio.text}"</p>
                 `;
             } catch (e) {
-                display.innerHTML = "O Senhor é o meu pastor, nada me faltará. (Salmos 23:1) - <small>Modo Offline</small>";
+                display.innerHTML = `<p>O Senhor é o meu pastor, nada me faltará. (Salmos 23:1)</p>`;
             }
         }
 
         // UI TABS
-        function mudarAba(aba) {
+        function mudarAba(aba, evt) {
             document.querySelectorAll('.conteudo-aba').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
 
             document.getElementById('aba-' + aba).classList.remove('hidden');
-            // Botão ativo logic (simplificado via onclick inline acima, ou via classe aqui)
-            event.target.classList.add('active');
+            if(evt) evt.target.classList.add('active');
         }
     </script>
 </body>
