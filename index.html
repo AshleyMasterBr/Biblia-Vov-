@@ -1,198 +1,162 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leitor Bíblico</title>
+    <title>Bíblia da Vovó</title>
     
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+
     <style>
-        /* --- ESTILO VISUAL --- */
         :root {
-            --cor-fundo: #fdfbf7;
-            --cor-texto: #2c1e14;
-            --cor-destaque: #8b5e3c;
-            --cor-botao: #4a6fa5;
-            --cor-botao-hover: #3b5b8c;
+            --bg-color: #fdf6e3;
+            --text-color: #2c3e50;
+            --accent-color: #8e44ad;
+            --secondary-bg: #fff;
         }
 
         body {
-            font-family: 'Georgia', 'Times New Roman', serif;
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
             padding: 20px;
-            line-height: 1.8;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid #e6dfd1;
+            line-height: 1.6;
             display: flex;
             flex-direction: column;
-            min-height: 80vh; /* Garante altura mínima bonita */
+            align-items: center;
+            min-height: 100vh;
         }
 
         header {
             text-align: center;
             margin-bottom: 30px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
         }
 
         h1 {
-            color: var(--cor-destaque);
-            margin: 0;
+            color: var(--accent-color);
             font-size: 2.5rem;
-        }
-
-        /* --- BARRA DE CONTROLE --- */
-        .controles {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            background: #f4f4f4;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-
-        select {
-            padding: 10px;
-            font-size: 1.1rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            min-width: 150px;
-            background-color: white;
-            cursor: pointer;
-        }
-
-        button {
-            padding: 10px 25px;
-            font-size: 1.1rem;
-            background-color: var(--cor-botao);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background-color: var(--cor-botao-hover);
-        }
-
-        /* --- ÁREA DE TEXTO --- */
-        main {
-            flex-grow: 1; /* Empurra o rodapé para baixo se o texto for curto */
-        }
-
-        #titulo-capitulo {
-            text-align: center;
-            font-size: 2rem;
-            margin-top: 0;
-            color: var(--cor-destaque);
-        }
-
-        #texto-sagrado {
-            font-size: 1.35rem;
-            text-align: justify;
-        }
-
-        .versiculo {
             margin-bottom: 10px;
         }
 
-        .numero {
-            font-size: 0.8em;
-            color: #999;
-            font-weight: bold;
-            margin-right: 5px;
-            vertical-align: super;
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
 
-        /* Loading e Erro */
+        button, select {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--accent-color);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        button:hover, select:hover {
+            opacity: 0.9;
+        }
+
+        select {
+            background-color: var(--secondary-bg);
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        #content-area {
+            background-color: var(--secondary-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 800px;
+            font-size: 1.2rem;
+            min-height: 200px;
+        }
+
+        .verse-num {
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 0.8em;
+            vertical-align: super;
+            margin-right: 5px;
+        }
+
         .loading {
             text-align: center;
-            color: #666;
+            color: #7f8c8d;
             font-style: italic;
-            padding: 20px;
         }
 
-        .erro-box {
+        .error {
+            color: #e74c3c;
             text-align: center;
-            color: #d9534f;
-            background: #f9e2e2;
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid #d9534f;
-        }
-        
-        /* Rodapé */
-        footer {
-            text-align: center; 
-            margin-top: 50px; 
-            border-top: 1px solid #eee; 
-            padding-top: 20px; 
-            color: #888; 
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 600px) {
-            .controles {
-                flex-direction: column;
-                width: 100%;
-            }
-            select, button {
-                width: 100%;
-            }
+            padding: 20px;
+            border: 1px solid #e74c3c;
+            border-radius: 8px;
+            background-color: #fadbd8;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>Bíblia Sagrada</h1>
-            <p>Leitura Diária</p>
-        </header>
-
-        <div class="controles">
-            <select id="select-livro">
-                <option value="">Carregando livros...</option>
-            </select>
-            
-            <select id="select-capitulo">
-                <option value="1">Capítulo 1</option>
-            </select>
-            
-            <button id="btn-carregar">Ler Texto</button>
+    <header>
+        <h1>📖 Palavra do Dia</h1>
+        <div class="controls">
+            <button onclick="carregarVersiculoAleatorio()">Nova Palavra</button>
         </div>
+    </header>
 
-        <main>
-            <h2 id="titulo-capitulo">Selecione um texto</h2>
+    <main id="content-area">
+        <div class="loading">Carregando a palavra...</div>
+    </main>
+
+    <script>
+        // Simulação de banco de dados para evitar erro de fetch se o arquivo não existir
+        // Julio, se você tiver um arquivo .json real, me avise que altero para buscar dele.
+        const bancoDeVersiculos = [
+            { livro: "Salmos", capitulo: 23, versiculo: 1, texto: "O Senhor é o meu pastor, nada me faltará." },
+            { livro: "Filipenses", capitulo: 4, versiculo: 13, texto: "Tudo posso naquele que me fortalece." },
+            { livro: "João", capitulo: 3, versiculo: 16, texto: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna." },
+            { livro: "Provérbios", capitulo: 3, versiculo: 5, texto: "Confie no Senhor de todo o seu coração e não se apoie em seu próprio entendimento." },
+            { livro: "Isaías", capitulo: 41, versiculo: 10, texto: "Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus; eu te fortaleço, e te ajudo, e te sustento com a destro da minha justiça." }
+        ];
+
+        function exibirVersiculo(data) {
+            const container = document.getElementById('content-area');
+            container.innerHTML = `
+                <h2 style="margin-top:0;">${data.livro} ${data.capitulo}:${data.versiculo}</h2>
+                <p>${data.texto}</p>
+            `;
+        }
+
+        function carregarVersiculoAleatorio() {
+            const container = document.getElementById('content-area');
+            container.innerHTML = '<div class="loading">Buscando inspiração...</div>';
             
-            <div id="texto-sagrado">
-                <p style="text-align: center; color: #777;">
-                    Escolha o livro e o capítulo acima e clique em "Ler Texto".
-                </p>
-            </div>
-        </main>
+            // Simula um pequeno delay de carregamento para parecer "sistema"
+            setTimeout(() => {
+                try {
+                    const randomIndex = Math.floor(Math.random() * bancoDeVersiculos.length);
+                    const versiculo = bancoDeVersiculos[randomIndex];
+                    exibirVersiculo(versiculo);
+                } catch (error) {
+                    console.error("Erro ao carregar:", error);
+                    container.innerHTML = `<div class="error">Texto não encontrado. (Erro interno do sistema)</div>`;
+                }
+            }, 500);
+        }
 
-        <footer>
-            <p>Desenvolvido com carinho pelo neto <strong>Julio Cardone CEO Empresas Pixel</strong>.</p>
-            <p style="font-size: 0.8rem;">© 2025 Pixel Studio</p>
-        </footer>
-    </div>
-
-    <script src="script.js"></script>
-
+        // Carrega ao iniciar
+        window.onload = carregarVersiculoAleatorio;
+    </script>
 </body>
 </html>
