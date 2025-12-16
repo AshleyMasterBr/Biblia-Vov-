@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Bíblia Simples</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Bíblia Sagrada</h1>
+        <p>Toque no livro para ler</p>
+    </header>
+
+    <div id="lista-livros" class="container">
+        </div>
+
+    <div id="leitor" class="leitor-tela escondido">
+        <div class="barra-topo">
+            <button onclick="fecharLeitor()" class="btn-voltar">⬅ Voltar</button>
+            <span id="titulo-livro">Gênesis 1</span>
+        </div>
+        <div id="texto-biblico" class="conteudo-texto">
+            </div>
+        <div class="botoes-navegacao">
+            <button onclick="capituloAnterior()">Anterior</button>
+            <button onclick="proximoCapitulo()">Próximo</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
