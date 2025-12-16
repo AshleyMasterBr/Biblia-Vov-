@@ -1,124 +1,99 @@
-// LISTA DE LIVROS (Coloquei os principais para testar, depois adicionamos todos)
-const livrosData = [
-    { nome: "Gênesis", abrev: "gn", caps: 50 },
-    { nome: "Êxodo", abrev: "ex", caps: 40 },
-    { nome: "Salmos", abrev: "sl", caps: 150 },
-    { nome: "Provérbios", abrev: "pv", caps: 31 },
-    { nome: "Isaías", abrev: "is", caps: 66 },
-    { nome: "Mateus", abrev: "mt", caps: 28 },
-    { nome: "Marcos", abrev: "mk", caps: 16 },
-    { nome: "Lucas", abrev: "lk", caps: 24 },
-    { nome: "João", abrev: "jo", caps: 21 },
-    { nome: "Atos", abrev: "at", caps: 28 },
-    { nome: "Romanos", abrev: "rm", caps: 16 },
-    { nome: "Apocalipse", abrev: "ap", caps: 22 }
-];
+// Configuração inicial
+const elements = {
+    textoSagrado: document.getElementById('texto-sagrado'), // Certifique-se que seu HTML tem uma div com esse ID
+    tituloCapitulo: document.getElementById('titulo-capitulo'), // E um título h2/h3 com esse ID
+    btnCarregar: document.getElementById('btn-carregar') // Seu botão de carregar
+};
 
-// VARIÁVEIS DE CONTROLE (Onde o usuário está)
-let livroAtual = null;
-let capituloAtual = 1;
+// Mapeamento simples de abreviações se necessário (A API usa abreviações em pt-br: gn, ex, ap)
+// Se você já tem a lógica de pegar o livro selecionado, mantenha. Aqui é o coração da requisição.
 
-// ELEMENTOS DA TELA
-const telaLivros = document.getElementById("tela-livros");
-const telaCapitulos = document.getElementById("tela-capitulos");
-const telaLeitor = document.getElementById("tela-leitor");
-const gridNumeros = document.getElementById("lista-numeros");
-const textoArea = document.getElementById("texto-biblico");
-
-// --- FUNÇÃO 1: INICIAR (MOSTRAR LIVROS) ---
-function iniciarApp() {
-    telaLivros.innerHTML = "";
+async function abrirTexto(livro, capitulo) {
+    // 1. Feedback visual imediato
+    if(elements.textoSagrado) elements.textoSagrado.innerHTML = '<p class="loading">⏳ Carregando texto sagrado...</p>';
     
-    livrosData.forEach(livro => {
-        const div = document.createElement("div");
-        div.className = "card-livro";
-        div.innerHTML = `
-            <span>${livro.nome}</span>
-            <span style="font-size: 14px; color: #666;">${livro.caps} caps</span>
-        `;
-        // Quando clicar no livro, abre os capítulos
-        div.onclick = () => abrirCapitulos(livro);
-        telaLivros.appendChild(div);
-    });
-}
+    // Chave única para salvar no navegador (Ex: "biblia_ap_12")
+    const cacheKey = `biblia_${livro}_${capitulo}`;
 
-// --- FUNÇÃO 2: ABRIR GRADE DE CAPÍTULOS ---
-function abrirCapitulos(livro) {
-    livroAtual = livro;
-    document.getElementById("titulo-livro-escolhido").innerText = livro.nome;
-    
-    // Limpa a grade anterior
-    gridNumeros.innerHTML = "";
-    
-    // Cria os botões de 1 até o total de capítulos
-    for (let i = 1; i <= livro.caps; i++) {
-        const btn = document.createElement("button");
-        btn.className = "btn-capitulo";
-        btn.innerText = i;
-        btn.onclick = () => abrirTexto(i);
-        gridNumeros.appendChild(btn);
+    // 2. Tenta pegar do Cache primeiro (Sem internet, Sem erro)
+    const cachedData = localStorage.getItem(cacheKey);
+    if (cachedData) {
+        console.log("Lendo da memória (Cache)...");
+        renderizarTexto(JSON.parse(cachedData));
+        return;
     }
 
-    // Troca de tela
-    telaLivros.classList.add("escondido");
-    telaCapitulos.classList.remove("escondido");
-}
-
-function voltarParaLivros() {
-    telaCapitulos.classList.add("escondido");
-    telaLivros.classList.remove("escondido");
-}
-
-// --- FUNÇÃO 3: ABRIR TEXTO (BUSCAR NA API) ---
-async function abrirTexto(capitulo) {
-    capituloAtual = capitulo;
-    
-    // Arruma a tela de leitura
-    document.getElementById("titulo-leitura").innerText = `${livroAtual.nome} ${capitulo}`;
-    textoArea.innerHTML = "<p style='text-align:center; margin-top:50px;'>⏳ Carregando texto sagrado...</p>";
-    
-    // Troca de tela
-    telaCapitulos.classList.add("escondido");
-    telaLeitor.classList.remove("escondido");
-
+    // 3. Se não tem no cache, busca na API usando um Proxy para evitar CORS
     try {
-        // BUSCA NA INTERNET (API)
-        const url = `https://www.abibliadigital.com.br/api/verses/nvi/${livroAtual.abrev}/${capitulo}`;
-        const resposta = await fetch(url);
-        const dados = await resposta.json();
+        // URL da API original
+        const targetUrl = `https://www.abibliadigital.com.br/api/verses/nvi/${livro}/${capitulo}`;
+        
+        // Usando o corsproxy.io para "enganar" o servidor e permitir o acesso
+        const proxyUrl = `https://corsproxy.io/?` + encodeURIComponent(targetUrl);
 
-        if (dados.verses) {
-            let htmlFinal = "";
-            dados.verses.forEach(verso => {
-                htmlFinal += `<p style="margin-bottom: 15px;"><strong>${verso.number}.</strong> ${verso.text}</p>`;
-            });
-            textoArea.innerHTML = htmlFinal;
-            // Rola para o topo
-            textoArea.scrollTop = 0;
-        } else {
-            textoArea.innerHTML = "<p>Erro ao carregar. Verifique a internet.</p>";
+        const response = await fetch(proxyUrl);
+
+        if (!response.ok) {
+            throw new Error(`Erro no servidor: ${response.status}`);
         }
-    } catch (erro) {
-        console.error(erro);
-        textoArea.innerHTML = "<p>Erro de conexão. O servidor não respondeu.</p>";
+
+        const data = await response.json();
+
+        // Salva no cache para a próxima vez (Fica salvo pra sempre até limpar o navegador)
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+
+        renderizarTexto(data);
+
+    } catch (error) {
+        console.error("Falha ao buscar:", error);
+        if(elements.textoSagrado) {
+            elements.textoSagrado.innerHTML = `
+                <div class="erro-box">
+                    <p>⚠️ Não foi possível carregar o texto sagrado.</p>
+                    <small>Detalhe: ${error.message}</small>
+                    <br>
+                    <button onclick="abrirTexto('${livro}', '${capitulo}')">Tentar Novamente</button>
+                </div>
+            `;
+        }
     }
 }
 
-function voltarParaCapitulos() {
-    telaLeitor.classList.add("escondido");
-    telaCapitulos.classList.remove("escondido");
-}
-
-// --- FUNÇÃO 4: BOTÕES PRÓXIMO/ANTERIOR ---
-function mudarCapitulo(direcao) {
-    const novoCapitulo = capituloAtual + direcao;
-    
-    if (novoCapitulo >= 1 && novoCapitulo <= livroAtual.caps) {
-        abrirTexto(novoCapitulo);
-    } else {
-        alert("Fim do livro!");
+function renderizarTexto(data) {
+    // Validação de segurança
+    if (!data || !data.verses) {
+        elements.textoSagrado.innerHTML = '<p>Texto indisponível.</p>';
+        return;
     }
+
+    // Atualiza Título se existir
+    if (elements.tituloCapitulo) {
+        elements.tituloCapitulo.innerText = `${data.book.name} ${data.chapter.number}`;
+    }
+
+    // Monta o HTML dos versículos
+    let htmlContent = '';
+    data.verses.forEach(versiculo => {
+        htmlContent += `
+            <p class="versiculo">
+                <span class="numero">${versiculo.number}</span>
+                ${versiculo.text}
+            </p>
+        `;
+    });
+
+    elements.textoSagrado.innerHTML = htmlContent;
 }
 
-// RODA TUDO AO ABRIR
-iniciarApp();
+// --- EXEMPLO DE USO NO SEU BOTÃO ---
+// (Adapte para como você pega os valores dos selects)
+if (elements.btnCarregar) {
+    elements.btnCarregar.onclick = function() {
+        // Exemplo: pegando de inputs ou fixo para teste
+        // Substitua 'ap' e '12' pelas variáveis dos seus <select>
+        const livroSelecionado = 'ap'; // Pegue do seu select real
+        const capituloSelecionado = 12; // Pegue do seu select real
+        
+        abrirTexto(livroSelecionado, capituloSelecionado);
+    };
+}
