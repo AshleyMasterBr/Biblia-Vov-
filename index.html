@@ -1,341 +1,44 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bíblia da Vovó</title>
-    
-    <link rel="manifest" href="./manifest.json">
-
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
-
-    <style>
-        /* CORREÇÃO PRINCIPAL: Garante que o padding não estoure a largura */
-        * {
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-color: #fdf6e3;
-            --text-color: #2c3e50;
-            --accent-color: #8e44ad;
-            --secondary-bg: #fff;
-            --btn-hover: #732d91;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 15px; /* Espaço nas bordas da tela */
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-            width: 100%;
-            max-width: 800px;
-        }
-
-        h1 {
-            color: var(--accent-color);
-            margin: 10px 0;
-        }
-
-        /* NAVEGAÇÃO ENTRE ABAS */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap; /* Garante que os botões não vazem em telas muito pequenas */
-        }
-
-        .tab-btn {
-            background: transparent;
-            border: 2px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-bottom: 5px; /* Espacinho se quebrar linha */
-        }
-
-        .tab-btn.active {
-            background: var(--accent-color);
-            color: white;
-        }
-
-        /* ÁREA DE CONTROLES */
-        .controls-leitura {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-            background: #eee;
-            padding: 10px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 800px;
-        }
-
-        select, button {
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-            flex-grow: 1; /* Faz os botões ocuparem espaço melhor no mobile */
-        }
-
-        button.action-btn {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            min-width: 80px; /* Garante um tamanho mínimo para o dedo */
-        }
-        
-        button.action-btn:hover { background-color: var(--btn-hover); }
-
-        /* ÁREA DE TEXTO (O Balão Branco) */
-        .display-box {
-            background-color: var(--secondary-bg);
-            padding: 20px; /* Reduzi um pouco para ganhar espaço */
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            width: 100%; /* Agora respeita a tela graças ao box-sizing */
-            max-width: 800px;
-            font-size: 1.3rem; 
-            min-height: 300px;
-            text-align: left;
-            overflow-wrap: break-word; /* Garante que palavras longas não estourem */
-        }
-
-        .versiculo { margin-bottom: 10px; display: block; }
-        .v-num { 
-            color: var(--accent-color); 
-            font-weight: bold; 
-            font-size: 0.8em; 
-            margin-right: 5px; 
-            vertical-align: super;
-        }
-
-        .hidden { display: none; }
-        .loading { text-align: center; color: #7f8c8d; font-style: italic; margin-top: 20px;}
-        
-        .nav-chapters {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-            width: 100%;
-            max-width: 800px;
-        }
-        
-        .conteudo-aba {
-             width: 100%;
-             display: flex;
-             flex-direction: column;
-             align-items: center;
-        }
-    </style>
+    <title>Bíblia do Vozinho</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
 </head>
 <body>
 
     <header>
-        <h1>📖 Bíblia da Vovó</h1>
-        
-        <div class="tabs">
-            <button class="tab-btn active" onclick="mudarAba('leitura', event)">Leitura Completa</button>
-            <button class="tab-btn" onclick="mudarAba('dia', event)">Palavra do Dia</button>
-        </div>
+        <h1>Bíblia do Vozinho</h1>
+        <p>Escolha um livro para ler</p>
     </header>
 
-    <div id="aba-leitura" class="conteudo-aba">
-        <div class="controls-leitura">
-            <select id="sel-livro" onchange="atualizarCapitulos()">
-                </select>
-            <select id="sel-capitulo">
-                <option value="1">Cap 1</option>
-            </select>
-            <button class="action-btn" onclick="buscarCapitulo()">Ler</button>
+    <div id="lista-livros" class="container">
+        </div>
+
+    <footer>
+        <p>Feito com ❤ pelo Neto Julio</p>
+    </footer>
+
+    <div id="leitor" class="leitor-tela escondido">
+        <div class="barra-topo">
+            <button onclick="fecharLeitor()" class="btn-voltar">⬅ Voltar para Início</button>
+            <span id="titulo-livro">Livro</span>
         </div>
         
-        <div id="texto-biblia" class="display-box">
-            <div style="text-align: center; color: #888;">Selecione um livro e clique em Ler.</div>
+        <div id="texto-biblico" class="conteudo-texto">
+            Selecione um capítulo...
         </div>
 
-        <div class="nav-chapters hidden" id="nav-chapters">
-            <button class="action-btn" onclick="mudarCapitulo(-1)">⬅ Anterior</button>
-            <button class="action-btn" onclick="mudarCapitulo(1)">Próximo ➡</button>
+        <div class="botoes-navegacao">
+            <button onclick="capituloAnterior()">Anterior</button>
+            <span id="info-capitulo" style="align-self: center; font-weight: bold;">Cap 1</span>
+            <button onclick="proximoCapitulo()">Próximo</button>
         </div>
     </div>
 
-    <div id="aba-dia" class="conteudo-aba hidden" style="text-align: center;">
-        <div id="texto-dia" class="display-box">
-            Clique abaixo para receber uma palavra.
-        </div>
-        <br>
-        <button class="action-btn" style="font-size: 1.2rem;" onclick="gerarPalavraDoDia()">Nova Palavra 🙏</button>
-    </div>
-
-    <script>
-        // DADOS: Lista de Livros e qtd de capítulos
-        const livrosBiblia = [
-            {nome: "Gênesis", caps: 50}, {nome: "Êxodo", caps: 40}, {nome: "Levítico", caps: 27}, 
-            {nome: "Números", caps: 36}, {nome: "Deuteronômio", caps: 34}, {nome: "Josué", caps: 24}, 
-            {nome: "Juízes", caps: 21}, {nome: "Rute", caps: 4}, {nome: "1 Samuel", caps: 31}, 
-            {nome: "2 Samuel", caps: 24}, {nome: "1 Reis", caps: 22}, {nome: "2 Reis", caps: 25}, 
-            {nome: "1 Crônicas", caps: 29}, {nome: "2 Crônicas", caps: 36}, {nome: "Esdras", caps: 10}, 
-            {nome: "Neemias", caps: 13}, {nome: "Ester", caps: 10}, {nome: "Jó", caps: 42}, 
-            {nome: "Salmos", caps: 150}, {nome: "Provérbios", caps: 31}, {nome: "Eclesiastes", caps: 12}, 
-            {nome: "Cânticos", caps: 8}, {nome: "Isaías", caps: 66}, {nome: "Jeremias", caps: 52}, 
-            {nome: "Lamentações", caps: 5}, {nome: "Ezequiel", caps: 48}, {nome: "Daniel", caps: 12}, 
-            {nome: "Oseias", caps: 14}, {nome: "Joel", caps: 3}, {nome: "Amós", caps: 9}, 
-            {nome: "Obadias", caps: 1}, {nome: "Jonas", caps: 4}, {nome: "Miqueias", caps: 7}, 
-            {nome: "Naum", caps: 3}, {nome: "Habacuque", caps: 3}, {nome: "Sofonias", caps: 3}, 
-            {nome: "Ageu", caps: 2}, {nome: "Zacarias", caps: 14}, {nome: "Malaquias", caps: 4},
-            {nome: "Mateus", caps: 28}, {nome: "Marcos", caps: 16}, {nome: "Lucas", caps: 24}, 
-            {nome: "João", caps: 21}, {nome: "Atos", caps: 28}, {nome: "Romanos", caps: 16}, 
-            {nome: "1 Coríntios", caps: 16}, {nome: "2 Coríntios", caps: 13}, {nome: "Gálatas", caps: 6}, 
-            {nome: "Efésios", caps: 6}, {nome: "Filipenses", caps: 4}, {nome: "Colossenses", caps: 4}, 
-            {nome: "1 Tessalonicenses", caps: 5}, {nome: "2 Tessalonicenses", caps: 3}, {nome: "1 Timóteo", caps: 6}, 
-            {nome: "2 Timóteo", caps: 4}, {nome: "Tito", caps: 3}, {nome: "Filemom", caps: 1}, 
-            {nome: "Hebreus", caps: 13}, {nome: "Tiago", caps: 5}, {nome: "1 Pedro", caps: 5}, 
-            {nome: "2 Pedro", caps: 3}, {nome: "1 João", caps: 5}, {nome: "2 João", caps: 1}, 
-            {nome: "3 João", caps: 1}, {nome: "Judas", caps: 1}, {nome: "Apocalipse", caps: 22}
-        ];
-
-        // Inicialização
-        window.onload = () => {
-            carregarLivros();
-            gerarPalavraDoDia(); 
-        };
-
-        // Preenche o Select de Livros
-        function carregarLivros() {
-            const selLivro = document.getElementById('sel-livro');
-            livrosBiblia.forEach((livro, index) => {
-                const option = document.createElement('option');
-                option.value = index; 
-                option.text = livro.nome;
-                selLivro.appendChild(option);
-            });
-            atualizarCapitulos();
-        }
-
-        // Atualiza o Select de Capítulos
-        function atualizarCapitulos() {
-            const indexLivro = document.getElementById('sel-livro').value;
-            const qtdCaps = livrosBiblia[indexLivro].caps;
-            const selCap = document.getElementById('sel-capitulo');
-            
-            selCap.innerHTML = ""; 
-            for(let i=1; i<=qtdCaps; i++){
-                const opt = document.createElement('option');
-                opt.value = i;
-                opt.text = "Cap " + i;
-                selCap.appendChild(opt);
-            }
-        }
-
-        // SISTEMA DE LEITURA (API)
-        async function buscarCapitulo() {
-            const indexLivro = document.getElementById('sel-livro').value;
-            const nomeLivro = livrosBiblia[indexLivro].nome;
-            const capitulo = document.getElementById('sel-capitulo').value;
-            
-            const display = document.getElementById('texto-biblia'); 
-            const nav = document.getElementById('nav-chapters');
-
-            display.innerHTML = '<div class="loading">📖 Buscando texto sagrado...</div>';
-            nav.classList.add('hidden');
-            
-            // API PÚBLICA (Almeida)
-            const url = `https://bible-api.com/${nomeLivro}+${capitulo}?translation=almeida`;
-
-            try {
-                const response = await fetch(url);
-                if(!response.ok) throw new Error("Erro API");
-                const data = await response.json();
-
-                let htmlContent = `<h2 style="color:var(--accent-color); margin-top:0;">${nomeLivro} ${capitulo}</h2>`;
-                
-                if(data.verses && data.verses.length > 0) {
-                    data.verses.forEach(v => {
-                        htmlContent += `<span class="versiculo"><span class="v-num">${v.verse}</span>${v.text} </span>`;
-                    });
-                    display.innerHTML = htmlContent;
-                    nav.classList.remove('hidden');
-                    
-                    // Rola para o topo do leitor
-                    display.scrollIntoView({behavior: "smooth"});
-                } else {
-                    throw new Error("Capítulo vazio ou não encontrado.");
-                }
-
-            } catch (error) {
-                console.error("Erro capturado:", error);
-                display.innerHTML = `<div style="color:red; text-align:center; padding:20px;">
-                    Não foi possível carregar o texto.<br>
-                    <small>Tente novamente em instantes.</small>
-                </div>`;
-            }
-        }
-
-        function mudarCapitulo(delta) {
-            const selCap = document.getElementById('sel-capitulo');
-            let novoCap = parseInt(selCap.value) + delta;
-            
-            if(novoCap > 0 && novoCap <= selCap.options.length) {
-                selCap.value = novoCap;
-                buscarCapitulo();
-            } else {
-                alert("Fim deste livro.");
-            }
-        }
-
-        // PALAVRA DO DIA
-        async function gerarPalavraDoDia() {
-            const display = document.getElementById('texto-dia');
-            display.innerHTML = '<div class="loading">Buscando inspiração...</div>';
-
-            const rLivro = livrosBiblia[Math.floor(Math.random() * livrosBiblia.length)];
-            const rCap = Math.floor(Math.random() * rLivro.caps) + 1;
-
-            const url = `https://bible-api.com/${rLivro.nome}+${rCap}?translation=almeida`;
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const versoAleatorio = data.verses[Math.floor(Math.random() * data.verses.length)];
-
-                display.innerHTML = `
-                    <h2 style="margin-top:0; color:var(--accent-color)">${rLivro.nome} ${rCap}:${versoAleatorio.verse}</h2>
-                    <p style="font-style: italic;">"${versoAleatorio.text}"</p>
-                `;
-            } catch (e) {
-                display.innerHTML = `<p>O Senhor é o meu pastor, nada me faltará. (Salmos 23:1)</p>`;
-            }
-        }
-
-        // UI TABS
-        function mudarAba(aba, evt) {
-            document.querySelectorAll('.conteudo-aba').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById('aba-' + aba).classList.remove('hidden');
-            if(evt) evt.target.classList.add('active');
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
