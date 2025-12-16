@@ -1,96 +1,45 @@
-// LISTA COMPLETA DOS 66 LIVROS
+// DADOS (Mantive a estrutura, mas só vamos usar o 'nome' e 'caps' pra lógica interna)
 const livros = [
-    // Velho Testamento
-    { nome: "Gênesis", abrev: "Gn", caps: 50 },
-    { nome: "Êxodo", abrev: "Ex", caps: 40 },
-    { nome: "Levítico", abrev: "Lv", caps: 27 },
-    { nome: "Números", abrev: "Nm", caps: 36 },
-    { nome: "Deuteronômio", abrev: "Dt", caps: 34 },
-    { nome: "Josué", abrev: "Js", caps: 24 },
-    { nome: "Juízes", abrev: "Jz", caps: 21 },
-    { nome: "Rute", abrev: "Rt", caps: 4 },
-    { nome: "1 Samuel", abrev: "1Sm", caps: 31 },
-    { nome: "2 Samuel", abrev: "2Sm", caps: 24 },
-    { nome: "1 Reis", abrev: "1Rs", caps: 22 },
-    { nome: "2 Reis", abrev: "2Rs", caps: 25 },
-    { nome: "1 Crônicas", abrev: "1Cr", caps: 29 },
-    { nome: "2 Crônicas", abrev: "2Cr", caps: 36 },
-    { nome: "Esdras", abrev: "Ed", caps: 10 },
-    { nome: "Neemias", abrev: "Ne", caps: 13 },
-    { nome: "Ester", abrev: "Et", caps: 10 },
-    { nome: "Jó", abrev: "Jó", caps: 42 },
-    { nome: "Salmos", abrev: "Sl", caps: 150 },
-    { nome: "Provérbios", abrev: "Pv", caps: 31 },
-    { nome: "Eclesiastes", abrev: "Ec", caps: 12 },
-    { nome: "Cânticos", abrev: "Ct", caps: 8 },
-    { nome: "Isaías", abrev: "Is", caps: 66 },
-    { nome: "Jeremias", abrev: "Jr", caps: 52 },
-    { nome: "Lamentações", abrev: "Lm", caps: 5 },
-    { nome: "Ezequiel", abrev: "Ez", caps: 48 },
-    { nome: "Daniel", abrev: "Dn", caps: 12 },
-    { nome: "Oseias", abrev: "Os", caps: 14 },
-    { nome: "Joel", abrev: "Jl", caps: 3 },
-    { nome: "Amós", abrev: "Am", caps: 9 },
-    { nome: "Obadias", abrev: "Ob", caps: 1 },
-    { nome: "Jonas", abrev: "Jn", caps: 4 },
-    { nome: "Miqueias", abrev: "Mq", caps: 7 },
-    { nome: "Naum", abrev: "Na", caps: 3 },
-    { nome: "Habacuque", abrev: "Hc", caps: 3 },
-    { nome: "Sofonias", abrev: "Sf", caps: 3 },
-    { nome: "Ageu", abrev: "Ag", caps: 2 },
-    { nome: "Zacarias", abrev: "Zc", caps: 14 },
-    { nome: "Malaquias", abrev: "Ml", caps: 4 },
-    // Novo Testamento
-    { nome: "Mateus", abrev: "Mt", caps: 28 },
-    { nome: "Marcos", abrev: "Mc", caps: 16 },
-    { nome: "Lucas", abrev: "Lc", caps: 24 },
-    { nome: "João", abrev: "Jo", caps: 21 },
-    { nome: "Atos", abrev: "At", caps: 28 },
-    { nome: "Romanos", abrev: "Rm", caps: 16 },
-    { nome: "1 Coríntios", abrev: "1Co", caps: 16 },
-    { nome: "2 Coríntios", abrev: "2Co", caps: 13 },
-    { nome: "Gálatas", abrev: "Gl", caps: 6 },
-    { nome: "Efésios", abrev: "Ef", caps: 6 },
-    { nome: "Filipenses", abrev: "Fp", caps: 4 },
-    { nome: "Colossenses", abrev: "Cl", caps: 4 },
-    { nome: "1 Tessalonicenses", abrev: "1Ts", caps: 5 },
-    { nome: "2 Tessalonicenses", abrev: "2Ts", caps: 3 },
-    { nome: "1 Timóteo", abrev: "1Tm", caps: 6 },
-    { nome: "2 Timóteo", abrev: "2Tm", caps: 4 },
-    { nome: "Tito", abrev: "Tt", caps: 3 },
-    { nome: "Filemom", abrev: "Fm", caps: 1 },
-    { nome: "Hebreus", abrev: "Hb", caps: 13 },
-    { nome: "Tiago", abrev: "Tg", caps: 5 },
-    { nome: "1 Pedro", abrev: "1Pe", caps: 5 },
-    { nome: "2 Pedro", abrev: "2Pe", caps: 3 },
-    { nome: "1 João", abrev: "1Jo", caps: 5 },
-    { nome: "2 João", abrev: "2Jo", caps: 1 },
-    { nome: "3 João", abrev: "3Jo", caps: 1 },
-    { nome: "Judas", abrev: "Jd", caps: 1 },
-    { nome: "Apocalipse", abrev: "Ap", caps: 22 }
+    { nome: "Gênesis", caps: 50 }, { nome: "Êxodo", caps: 40 }, { nome: "Levítico", caps: 27 },
+    { nome: "Números", caps: 36 }, { nome: "Deuteronômio", caps: 34 }, { nome: "Josué", caps: 24 },
+    { nome: "Juízes", caps: 21 }, { nome: "Rute", caps: 4 }, { nome: "1 Samuel", caps: 31 },
+    { nome: "2 Samuel", caps: 24 }, { nome: "1 Reis", caps: 22 }, { nome: "2 Reis", caps: 25 },
+    { nome: "1 Crônicas", caps: 29 }, { nome: "2 Crônicas", caps: 36 }, { nome: "Esdras", caps: 10 },
+    { nome: "Neemias", caps: 13 }, { nome: "Ester", caps: 10 }, { nome: "Jó", caps: 42 },
+    { nome: "Salmos", caps: 150 }, { nome: "Provérbios", caps: 31 }, { nome: "Eclesiastes", caps: 12 },
+    { nome: "Cânticos", caps: 8 }, { nome: "Isaías", caps: 66 }, { nome: "Jeremias", caps: 52 },
+    { nome: "Lamentações", caps: 5 }, { nome: "Ezequiel", caps: 48 }, { nome: "Daniel", caps: 12 },
+    { nome: "Oseias", caps: 14 }, { nome: "Joel", caps: 3 }, { nome: "Amós", caps: 9 },
+    { nome: "Obadias", caps: 1 }, { nome: "Jonas", caps: 4 }, { nome: "Miqueias", caps: 7 },
+    { nome: "Naum", caps: 3 }, { nome: "Habacuque", caps: 3 }, { nome: "Sofonias", caps: 3 },
+    { nome: "Ageu", caps: 2 }, { nome: "Zacarias", caps: 14 }, { nome: "Malaquias", caps: 4 },
+    { nome: "Mateus", caps: 28 }, { nome: "Marcos", caps: 16 }, { nome: "Lucas", caps: 24 },
+    { nome: "João", caps: 21 }, { nome: "Atos", caps: 28 }, { nome: "Romanos", caps: 16 },
+    { nome: "1 Coríntios", caps: 16 }, { nome: "2 Coríntios", caps: 13 }, { nome: "Gálatas", caps: 6 },
+    { nome: "Efésios", caps: 6 }, { nome: "Filipenses", caps: 4 }, { nome: "Colossenses", caps: 4 },
+    { nome: "1 Tessalonicenses", caps: 5 }, { nome: "2 Tessalonicenses", caps: 3 },
+    { nome: "1 Timóteo", caps: 6 }, { nome: "2 Timóteo", caps: 4 }, { nome: "Tito", caps: 3 },
+    { nome: "Filemom", caps: 1 }, { nome: "Hebreus", caps: 13 }, { nome: "Tiago", caps: 5 },
+    { nome: "1 Pedro", caps: 5 }, { nome: "2 Pedro", caps: 3 }, { nome: "1 João", caps: 5 },
+    { nome: "2 João", caps: 1 }, { nome: "3 João", caps: 1 }, { nome: "Judas", caps: 1 },
+    { nome: "Apocalipse", caps: 22 }
 ];
 
 const listaContainer = document.getElementById("lista-livros");
 let livroAtual = null;
 let capituloAtual = 1;
 
-// FUNÇÃO PRINCIPAL: Carrega a lista na tela
 function carregarLista() {
     listaContainer.innerHTML = "";
     
-    livros.forEach((livro, index) => {
+    livros.forEach((livro) => {
         const div = document.createElement("div");
         div.className = "card-livro";
         
-        // Define se é Velho ou Novo Testamento pelo índice (39 livros no VT)
-        const testamento = index < 39 ? "Velho Test." : "Novo Test.";
-        
+        // CORREÇÃO AQUI: Somente o Nome e a Seta. Nada mais.
         div.innerHTML = `
-            <div>
-                <span style="display:block">${livro.nome}</span>
-                <span class="tag-testamento">${testamento}</span>
-            </div>
-            <span style="font-size: 16px; color: #888;">${livro.caps} Caps ➤</span>
+            <span>${livro.nome}</span>
+            <span class="seta">➤</span>
         `;
         
         div.onclick = () => abrirLeitor(livro);
@@ -98,40 +47,34 @@ function carregarLista() {
     });
 }
 
-// ABRE O LEITOR
 function abrirLeitor(livro) {
     livroAtual = livro;
-    capituloAtual = 1; // Sempre começa no cap 1 ao abrir
-    
+    capituloAtual = 1;
     document.getElementById("leitor").classList.remove("escondido");
     atualizarTexto();
 }
 
-// FECHA O LEITOR
 function fecharLeitor() {
     document.getElementById("leitor").classList.add("escondido");
 }
 
-// CARREGA O TEXTO DO CAPÍTULO (Aqui viria a API, por enquanto é simulado)
 function atualizarTexto() {
     document.getElementById("titulo-livro").innerText = `${livroAtual.nome}`;
     document.getElementById("info-capitulo").innerText = `Cap ${capituloAtual}`;
     
-    // Simulação do texto bíblico
+    // Texto Simulado (Limpo)
     document.getElementById("texto-biblico").innerHTML = `
-        <h3>Capítulo ${capituloAtual}</h3>
-        <p>1. No princípio, Deus criou os céus e a terra...</p>
-        <p>2. A terra, porém, estava sem forma e vazia...</p>
-        <p><i>(Texto demonstrativo do ${livroAtual.nome} capítulo ${capituloAtual})</i></p>
-        <br><br>
-        <p style="text-align:center; color:#888;">--- Fim da Página ---</p>
+        <h3 style="margin-bottom:20px;">Capítulo ${capituloAtual}</h3>
+        <p>1. No princípio, Deus criou os céus e a terra.</p>
+        <p>2. A terra, porém, estava sem forma e vazia.</p>
+        <p>3. E disse Deus: Haja luz; e houve luz.</p>
+        <br>
+        <p style="color:#666; font-size:18px;">(Aqui virá o texto completo de ${livroAtual.nome})</p>
     `;
-
-    // Rola para o topo
+    // Rola para o topo automaticamente
     document.getElementById("texto-biblico").scrollTop = 0;
 }
 
-// NAVEGAÇÃO
 function proximoCapitulo() {
     if (capituloAtual < livroAtual.caps) {
         capituloAtual++;
@@ -148,5 +91,4 @@ function capituloAnterior() {
     }
 }
 
-// Inicia
 carregarLista();
