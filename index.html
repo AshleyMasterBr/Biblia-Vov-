@@ -2,29 +2,42 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Bíblia Simples</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bíblia Simples</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
         <h1>Bíblia Sagrada</h1>
-        <p>Toque no livro para ler</p>
+        <p>Toque para ler</p>
     </header>
 
-    <div id="lista-livros" class="container">
+    <div id="tela-livros" class="container">
         </div>
 
-    <div id="leitor" class="leitor-tela escondido">
+    <div id="tela-capitulos" class="grade-container escondido">
         <div class="barra-topo">
-            <button onclick="fecharLeitor()" class="btn-voltar">⬅ Voltar</button>
-            <span id="titulo-livro">Gênesis 1</span>
+            <button onclick="voltarParaLivros()" class="btn-voltar">⬅ Voltar</button>
+            <span id="titulo-livro-escolhido">Livro</span>
         </div>
-        <div id="texto-biblico" class="conteudo-texto">
+        <div id="lista-numeros" class="grid-numeros">
             </div>
+    </div>
+
+    <div id="tela-leitor" class="leitor-tela escondido">
+        <div class="barra-topo">
+            <button onclick="voltarParaCapitulos()" class="btn-voltar">⬅ Capítulos</button>
+            <span id="titulo-leitura">Leitura</span>
+        </div>
+        
+        <div id="texto-biblico" class="conteudo-texto">
+            <p>Carregando...</p>
+        </div>
+
         <div class="botoes-navegacao">
-            <button onclick="capituloAnterior()">Anterior</button>
-            <button onclick="proximoCapitulo()">Próximo</button>
+            <button onclick="mudarCapitulo(-1)">Anterior</button>
+            <button onclick="mudarCapitulo(1)">Próximo</button>
         </div>
     </div>
 
