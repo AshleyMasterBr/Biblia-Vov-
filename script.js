@@ -1,6 +1,6 @@
 // --- CONFIGURAÇÃO E DADOS ---
 
-// Lista completa com abreviação e total de capítulos (Para não depender da API)
+// Lista completa com abreviação e total de capítulos
 const BIBLIA_LIVROS = [
     { nome: "Gênesis", abrev: "gn", caps: 50 },
     { nome: "Êxodo", abrev: "ex", caps: 40 },
@@ -70,7 +70,7 @@ const BIBLIA_LIVROS = [
     { nome: "Apocalipse", abrev: "ap", caps: 22 }
 ];
 
-// Elementos do DOM (Verifique se os IDs no seu HTML batem com estes)
+// Elementos do DOM
 const elements = {
     selectLivro: document.getElementById('select-livro'),
     selectCapitulo: document.getElementById('select-capitulo'),
@@ -96,7 +96,7 @@ function init() {
         buscarTexto(livro, capitulo);
     });
 
-    // Carrega capítulos do primeiro livro (Gênesis) ao iniciar
+    // Carrega capítulos do primeiro livro ao iniciar
     if(BIBLIA_LIVROS.length > 0) {
         carregarCapitulos(BIBLIA_LIVROS[0].abrev);
     }
@@ -141,11 +141,12 @@ async function buscarTexto(livro, capitulo) {
         return;
     }
 
-    // 3. Tenta API com Proxy (CORS Fix)
+    // 3. Tenta API com Proxy NOVO (AllOrigins)
     try {
         const urlOriginal = `https://www.abibliadigital.com.br/api/verses/nvi/${livro}/${capitulo}`;
-        // Proxy para evitar bloqueio do navegador
-        const proxyUrl = `https://corsproxy.io/?` + encodeURIComponent(urlOriginal);
+        
+        // MUDANÇA AQUI: Trocamos corsproxy.io por api.allorigins.win
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(urlOriginal)}`;
 
         const response = await fetch(proxyUrl);
         
@@ -162,15 +163,23 @@ async function buscarTexto(livro, capitulo) {
         console.error(error);
         elements.textoSagrado.innerHTML = `
             <div class="erro-box">
-                <h3>⚠️ Falha na conexão</h3>
-                <p>Verifique sua internet e tente novamente.</p>
-                <small>${error.message}</small>
+                <h3>⚠️ Serviço Temporariamente Indisponível</h3>
+                <p>O servidor da Bíblia não respondeu.</p>
+                <small>Erro técnico: ${error.message}</small>
+                <br><br>
+                <button onclick="window.location.reload()">Recarregar Página</button>
             </div>
         `;
     }
 }
 
 function renderizar(data) {
+    // Validação extra
+    if(!data || !data.verses) {
+         elements.textoSagrado.innerHTML = '<p>Texto não encontrado.</p>';
+         return;
+    }
+
     // Título
     if (elements.tituloCapitulo) {
         elements.tituloCapitulo.innerText = `${data.book.name} ${data.chapter.number}`;
