@@ -10,6 +10,11 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
 
     <style>
+        /* CORREÇÃO PRINCIPAL: Garante que o padding não estoure a largura */
+        * {
+            box-sizing: border-box;
+        }
+
         :root {
             --bg-color: #fdf6e3;
             --text-color: #2c3e50;
@@ -23,7 +28,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 15px;
+            padding: 15px; /* Espaço nas bordas da tela */
             line-height: 1.6;
             display: flex;
             flex-direction: column;
@@ -49,6 +54,7 @@
             gap: 10px;
             justify-content: center;
             margin-bottom: 20px;
+            flex-wrap: wrap; /* Garante que os botões não vazem em telas muito pequenas */
         }
 
         .tab-btn {
@@ -59,6 +65,7 @@
             border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
+            margin-bottom: 5px; /* Espacinho se quebrar linha */
         }
 
         .tab-btn.active {
@@ -76,6 +83,8 @@
             background: #eee;
             padding: 10px;
             border-radius: 10px;
+            width: 100%;
+            max-width: 800px;
         }
 
         select, button {
@@ -83,6 +92,7 @@
             border-radius: 8px;
             border: 1px solid #ccc;
             font-size: 1rem;
+            flex-grow: 1; /* Faz os botões ocuparem espaço melhor no mobile */
         }
 
         button.action-btn {
@@ -91,21 +101,23 @@
             border: none;
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            min-width: 80px; /* Garante um tamanho mínimo para o dedo */
         }
         
         button.action-btn:hover { background-color: var(--btn-hover); }
 
-        /* ÁREA DE TEXTO */
+        /* ÁREA DE TEXTO (O Balão Branco) */
         .display-box {
             background-color: var(--secondary-bg);
-            padding: 25px;
+            padding: 20px; /* Reduzi um pouco para ganhar espaço */
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            width: 100%;
+            width: 100%; /* Agora respeita a tela graças ao box-sizing */
             max-width: 800px;
             font-size: 1.3rem; 
             min-height: 300px;
             text-align: left;
+            overflow-wrap: break-word; /* Garante que palavras longas não estourem */
         }
 
         .versiculo { margin-bottom: 10px; display: block; }
@@ -126,6 +138,15 @@
             margin-top: 20px;
             border-top: 1px solid #eee;
             padding-top: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .conteudo-aba {
+             width: 100%;
+             display: flex;
+             flex-direction: column;
+             align-items: center;
         }
     </style>
 </head>
@@ -169,6 +190,7 @@
     </div>
 
     <script>
+        // DADOS: Lista de Livros e qtd de capítulos
         const livrosBiblia = [
             {nome: "Gênesis", caps: 50}, {nome: "Êxodo", caps: 40}, {nome: "Levítico", caps: 27}, 
             {nome: "Números", caps: 36}, {nome: "Deuteronômio", caps: 34}, {nome: "Josué", caps: 24}, 
@@ -194,11 +216,13 @@
             {nome: "3 João", caps: 1}, {nome: "Judas", caps: 1}, {nome: "Apocalipse", caps: 22}
         ];
 
+        // Inicialização
         window.onload = () => {
             carregarLivros();
             gerarPalavraDoDia(); 
         };
 
+        // Preenche o Select de Livros
         function carregarLivros() {
             const selLivro = document.getElementById('sel-livro');
             livrosBiblia.forEach((livro, index) => {
@@ -210,6 +234,7 @@
             atualizarCapitulos();
         }
 
+        // Atualiza o Select de Capítulos
         function atualizarCapitulos() {
             const indexLivro = document.getElementById('sel-livro').value;
             const qtdCaps = livrosBiblia[indexLivro].caps;
@@ -224,18 +249,19 @@
             }
         }
 
+        // SISTEMA DE LEITURA (API)
         async function buscarCapitulo() {
             const indexLivro = document.getElementById('sel-livro').value;
             const nomeLivro = livrosBiblia[indexLivro].nome;
             const capitulo = document.getElementById('sel-capitulo').value;
             
-            // O PROBLEMA ESTAVA AQUI: corrigido para pegar o ID certo 'texto-biblia'
             const display = document.getElementById('texto-biblia'); 
             const nav = document.getElementById('nav-chapters');
 
             display.innerHTML = '<div class="loading">📖 Buscando texto sagrado...</div>';
             nav.classList.add('hidden');
             
+            // API PÚBLICA (Almeida)
             const url = `https://bible-api.com/${nomeLivro}+${capitulo}?translation=almeida`;
 
             try {
@@ -252,7 +278,7 @@
                     display.innerHTML = htmlContent;
                     nav.classList.remove('hidden');
                     
-                    // CORREÇÃO CRÍTICA: agora rola usando a variável correta
+                    // Rola para o topo do leitor
                     display.scrollIntoView({behavior: "smooth"});
                 } else {
                     throw new Error("Capítulo vazio ou não encontrado.");
@@ -262,7 +288,7 @@
                 console.error("Erro capturado:", error);
                 display.innerHTML = `<div style="color:red; text-align:center; padding:20px;">
                     Não foi possível carregar o texto.<br>
-                    <small>Detalhe: ${error.message}</small>
+                    <small>Tente novamente em instantes.</small>
                 </div>`;
             }
         }
@@ -279,12 +305,14 @@
             }
         }
 
+        // PALAVRA DO DIA
         async function gerarPalavraDoDia() {
             const display = document.getElementById('texto-dia');
             display.innerHTML = '<div class="loading">Buscando inspiração...</div>';
 
             const rLivro = livrosBiblia[Math.floor(Math.random() * livrosBiblia.length)];
             const rCap = Math.floor(Math.random() * rLivro.caps) + 1;
+
             const url = `https://bible-api.com/${rLivro.nome}+${rCap}?translation=almeida`;
 
             try {
@@ -301,6 +329,7 @@
             }
         }
 
+        // UI TABS
         function mudarAba(aba, evt) {
             document.querySelectorAll('.conteudo-aba').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
