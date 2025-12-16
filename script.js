@@ -1,4 +1,4 @@
-// LISTA DE LIVROS (Usada para navegação)
+// LISTA DE LIVROS (VERSÃO FINAL)
 const livros = [
     { nome: "Gênesis", caps: 50 }, { nome: "Êxodo", caps: 40 }, { nome: "Levítico", caps: 27 },
     { nome: "Números", caps: 36 }, { nome: "Deuteronômio", caps: 34 }, { nome: "Josué", caps: 24 },
@@ -29,7 +29,6 @@ const listaContainer = document.getElementById("lista-livros");
 let livroAtual = null;
 let capituloAtual = 1;
 
-// 1. CARREGA A LISTA LIMPA (Só Nome e Seta)
 function carregarLista() {
     listaContainer.innerHTML = "";
     livros.forEach((livro) => {
@@ -41,7 +40,6 @@ function carregarLista() {
     });
 }
 
-// 2. ABRE O LEITOR
 function abrirLeitor(livro) {
     livroAtual = livro;
     capituloAtual = 1;
@@ -53,7 +51,6 @@ function fecharLeitor() {
     document.getElementById("leitor").classList.add("escondido");
 }
 
-// 3. BUSCA O TEXTO NA API (bible-api.com)
 async function buscarTextoNaAPI() {
     const titulo = document.getElementById("titulo-livro");
     const infoCap = document.getElementById("info-capitulo");
@@ -61,25 +58,17 @@ async function buscarTextoNaAPI() {
 
     titulo.innerText = `${livroAtual.nome}`;
     infoCap.innerText = `Cap ${capituloAtual}`;
-    
-    // Mostra carregando
     areaTexto.innerHTML = `<p style="text-align:center; padding-top:50px; color:#666;">⏳ Buscando a palavra...</p>`;
 
     try {
-        // Formata o nome para URL (Ex: "1 João" vira "1%20João")
         const nomeFormatado = encodeURIComponent(livroAtual.nome);
-        // URL da API estável
         const url = `https://bible-api.com/${nomeFormatado}+${capituloAtual}?translation=almeida`;
         
         const resposta = await fetch(url);
-        
         if (!resposta.ok) throw new Error("Erro na conexão");
-        
         const dados = await resposta.json();
 
-        // Limpa e exibe o texto
         areaTexto.innerHTML = "";
-        
         const tituloCap = document.createElement("h3");
         tituloCap.style.marginBottom = "20px";
         tituloCap.innerText = `Capítulo ${capituloAtual}`;
@@ -87,34 +76,24 @@ async function buscarTextoNaAPI() {
 
         dados.verses.forEach(versiculo => {
             const p = document.createElement("p");
-            // Remove espaços extras do texto da API
             p.innerHTML = `<strong>${versiculo.verse}.</strong> ${versiculo.text.trim()}`;
             p.style.marginBottom = "10px";
             areaTexto.appendChild(p);
         });
-
-        // Rola para o topo
         areaTexto.scrollTop = 0;
 
     } catch (erro) {
         console.error(erro);
-        areaTexto.innerHTML = `
-            <div style="text-align:center; padding-top:20px;">
-                <p>⚠️ Falha ao carregar.</p>
-                <p style="font-size:16px">Verifique a internet.</p>
-                <button onclick="buscarTextoNaAPI()" style="margin-top:20px; padding:10px 20px; font-size:18px;">Tentar de Novo</button>
-            </div>
-        `;
+        areaTexto.innerHTML = `<div style="text-align:center; padding-top:20px;"><p>⚠️ Falha ao carregar.</p><button onclick="buscarTextoNaAPI()" style="margin-top:20px; padding:10px;">Tentar de Novo</button></div>`;
     }
 }
 
-// 4. NAVEGAÇÃO ENTRE CAPÍTULOS
 function proximoCapitulo() {
     if (capituloAtual < livroAtual.caps) {
         capituloAtual++;
         buscarTextoNaAPI();
     } else {
-        alert("Fim do Livro de " + livroAtual.nome);
+        alert("Fim do Livro!");
     }
 }
 
@@ -125,5 +104,4 @@ function capituloAnterior() {
     }
 }
 
-// INICIALIZA O APP
 carregarLista();
