@@ -3,45 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bíblia Simples</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
+    <title>Leitor Bíblico</title>
+    
+    <style>
+        /* --- ESTILO VISUAL --- */
+        :root {
+            --cor-fundo: #fdfbf7;
+            --cor-texto: #2c1e14;
+            --cor-destaque: #8b5e3c;
+            --cor-botao: #4a6fa5;
+            --cor-botao-hover: #3b5b8c;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #e6dfd1;
+            display: flex;
+            flex-direction: column;
+            min-height: 80vh; /* Garante altura mínima bonita */
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--cor-destaque);
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        /* --- BARRA DE CONTROLE --- */
+        .controles {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 1.1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            min-width: 150px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 10px 25px;
+            font-size: 1.1rem;
+            background-color: var(--cor-botao);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: var(--cor-botao-hover);
+        }
+
+        /* --- ÁREA DE TEXTO --- */
+        main {
+            flex-grow: 1; /* Empurra o rodapé para baixo se o texto for curto */
+        }
+
+        #titulo-capitulo {
+            text-align: center;
+            font-size: 2rem;
+            margin-top: 0;
+            color: var(--cor-destaque);
+        }
+
+        #texto-sagrado {
+            font-size: 1.35rem;
+            text-align: justify;
+        }
+
+        .versiculo {
+            margin-bottom: 10px;
+        }
+
+        .numero {
+            font-size: 0.8em;
+            color: #999;
+            font-weight: bold;
+            margin-right: 5px;
+            vertical-align: super;
+        }
+
+        /* Loading e Erro */
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .erro-box {
+            text-align: center;
+            color: #d9534f;
+            background: #f9e2e2;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #d9534f;
+        }
+        
+        /* Rodapé */
+        footer {
+            text-align: center; 
+            margin-top: 50px; 
+            border-top: 1px solid #eee; 
+            padding-top: 20px; 
+            color: #888; 
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .controles {
+                flex-direction: column;
+                width: 100%;
+            }
+            select, button {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <header>
-        <h1>Bíblia Sagrada</h1>
-        <p>Toque para ler</p>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Bíblia Sagrada</h1>
+            <p>Leitura Diária</p>
+        </header>
 
-    <div id="tela-livros" class="container">
+        <div class="controles">
+            <select id="select-livro">
+                <option value="">Carregando livros...</option>
+            </select>
+            
+            <select id="select-capitulo">
+                <option value="1">Capítulo 1</option>
+            </select>
+            
+            <button id="btn-carregar">Ler Texto</button>
         </div>
 
-    <div id="tela-capitulos" class="grade-container escondido">
-        <div class="barra-topo">
-            <button onclick="voltarParaLivros()" class="btn-voltar">⬅ Voltar</button>
-            <span id="titulo-livro-escolhido">Livro</span>
-        </div>
-        <div id="lista-numeros" class="grid-numeros">
+        <main>
+            <h2 id="titulo-capitulo">Selecione um texto</h2>
+            
+            <div id="texto-sagrado">
+                <p style="text-align: center; color: #777;">
+                    Escolha o livro e o capítulo acima e clique em "Ler Texto".
+                </p>
             </div>
-    </div>
+        </main>
 
-    <div id="tela-leitor" class="leitor-tela escondido">
-        <div class="barra-topo">
-            <button onclick="voltarParaCapitulos()" class="btn-voltar">⬅ Capítulos</button>
-            <span id="titulo-leitura">Leitura</span>
-        </div>
-        
-        <div id="texto-biblico" class="conteudo-texto">
-            <p>Carregando...</p>
-        </div>
-
-        <div class="botoes-navegacao">
-            <button onclick="mudarCapitulo(-1)">Anterior</button>
-            <button onclick="mudarCapitulo(1)">Próximo</button>
-        </div>
+        <footer>
+            <p>Desenvolvido com carinho pelo neto <strong>Julio Cardone</strong>.</p>
+            <p style="font-size: 0.8rem;">© 2025 Pixel Studio</p>
+        </footer>
     </div>
 
     <script src="script.js"></script>
+
 </body>
 </html>
