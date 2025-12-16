@@ -13,6 +13,7 @@
             --text-color: #2c3e50;
             --accent-color: #8e44ad;
             --secondary-bg: #fff;
+            --btn-hover: #732d91;
         }
 
         body {
@@ -20,7 +21,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             line-height: 1.6;
             display: flex;
             flex-direction: column;
@@ -30,133 +31,161 @@
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             width: 100%;
             max-width: 800px;
         }
 
         h1 {
             color: var(--accent-color);
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            margin: 10px 0;
         }
 
-        .controls {
+        /* NAVEGAÇÃO ENTRE ABAS */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* ÁREA DE CONTROLES (SELETORES) */
+        .controls-leitura {
             display: flex;
             gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            background: #eee;
+            padding: 10px;
+            border-radius: 10px;
         }
 
-        button, select {
-            padding: 10px 20px;
-            border: none;
+        select, button {
+            padding: 10px;
             border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        button.action-btn {
             background-color: var(--accent-color);
             color: white;
-            font-size: 1rem;
+            border: none;
             cursor: pointer;
-            transition: opacity 0.3s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        
+        button.action-btn:hover { background-color: var(--btn-hover); }
 
-        button:hover, select:hover {
-            opacity: 0.9;
-        }
-
-        select {
+        /* ÁREA DE TEXTO */
+        #display-area {
             background-color: var(--secondary-bg);
-            color: var(--text-color);
-            border: 2px solid var(--accent-color);
-        }
-
-        #content-area {
-            background-color: var(--secondary-bg);
-            padding: 30px;
+            padding: 25px;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             width: 100%;
             max-width: 800px;
-            font-size: 1.2rem;
-            min-height: 200px;
+            font-size: 1.3rem; /* Letra maior para a vovó */
+            min-height: 300px;
+            text-align: left;
         }
 
-        .verse-num {
-            font-weight: bold;
-            color: var(--accent-color);
-            font-size: 0.8em;
+        .versiculo { margin-bottom: 10px; display: block; }
+        .v-num { 
+            color: var(--accent-color); 
+            font-weight: bold; 
+            font-size: 0.8em; 
+            margin-right: 5px; 
             vertical-align: super;
-            margin-right: 5px;
         }
 
-        .loading {
-            text-align: center;
-            color: #7f8c8d;
-            font-style: italic;
-        }
-
-        .error {
-            color: #e74c3c;
-            text-align: center;
-            padding: 20px;
-            border: 1px solid #e74c3c;
-            border-radius: 8px;
-            background-color: #fadbd8;
+        .hidden { display: none; }
+        .loading { text-align: center; color: #7f8c8d; font-style: italic; margin-top: 20px;}
+        
+        /* Navegação de capítulos */
+        .nav-chapters {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>📖 Palavra do Dia</h1>
-        <div class="controls">
-            <button onclick="carregarVersiculoAleatorio()">Nova Palavra</button>
+        <h1>📖 Bíblia da Vovó</h1>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="mudarAba('leitura')">Leitura Completa</button>
+            <button class="tab-btn" onclick="mudarAba('dia')">Palavra do Dia</button>
         </div>
     </header>
 
-    <main id="content-area">
-        <div class="loading">Carregando a palavra...</div>
-    </main>
+    <div id="aba-leitura" class="conteudo-aba">
+        <div class="controls-leitura">
+            <select id="sel-livro" onchange="atualizarCapitulos()">
+                </select>
+            <select id="sel-capitulo">
+                <option value="1">Cap 1</option>
+            </select>
+            <button class="action-btn" onclick="buscarCapitulo()">Ler</button>
+        </div>
+        
+        <div id="texto-biblia" class="display-box">
+            <div style="text-align: center; color: #888;">Selecione um livro e clique em Ler.</div>
+        </div>
+
+        <div class="nav-chapters hidden" id="nav-chapters">
+            <button class="action-btn" onclick="mudarCapitulo(-1)">⬅ Anterior</button>
+            <button class="action-btn" onclick="mudarCapitulo(1)">Próximo ➡</button>
+        </div>
+    </div>
+
+    <div id="aba-dia" class="conteudo-aba hidden" style="text-align: center;">
+        <div id="texto-dia" style="background: #fff; padding: 30px; border-radius: 15px; font-size: 1.4rem;">
+            Clique abaixo para receber uma palavra.
+        </div>
+        <br>
+        <button class="action-btn" style="font-size: 1.2rem;" onclick="gerarPalavraDoDia()">Nova Palavra 🙏</button>
+    </div>
 
     <script>
-        // Simulação de banco de dados para evitar erro de fetch se o arquivo não existir
-        // Julio, se você tiver um arquivo .json real, me avise que altero para buscar dele.
-        const bancoDeVersiculos = [
-            { livro: "Salmos", capitulo: 23, versiculo: 1, texto: "O Senhor é o meu pastor, nada me faltará." },
-            { livro: "Filipenses", capitulo: 4, versiculo: 13, texto: "Tudo posso naquele que me fortalece." },
-            { livro: "João", capitulo: 3, versiculo: 16, texto: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna." },
-            { livro: "Provérbios", capitulo: 3, versiculo: 5, texto: "Confie no Senhor de todo o seu coração e não se apoie em seu próprio entendimento." },
-            { livro: "Isaías", capitulo: 41, versiculo: 10, texto: "Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus; eu te fortaleço, e te ajudo, e te sustento com a destro da minha justiça." }
-        ];
-
-        function exibirVersiculo(data) {
-            const container = document.getElementById('content-area');
-            container.innerHTML = `
-                <h2 style="margin-top:0;">${data.livro} ${data.capitulo}:${data.versiculo}</h2>
-                <p>${data.texto}</p>
-            `;
-        }
-
-        function carregarVersiculoAleatorio() {
-            const container = document.getElementById('content-area');
-            container.innerHTML = '<div class="loading">Buscando inspiração...</div>';
-            
-            // Simula um pequeno delay de carregamento para parecer "sistema"
-            setTimeout(() => {
-                try {
-                    const randomIndex = Math.floor(Math.random() * bancoDeVersiculos.length);
-                    const versiculo = bancoDeVersiculos[randomIndex];
-                    exibirVersiculo(versiculo);
-                } catch (error) {
-                    console.error("Erro ao carregar:", error);
-                    container.innerHTML = `<div class="error">Texto não encontrado. (Erro interno do sistema)</div>`;
-                }
-            }, 500);
-        }
-
-        // Carrega ao iniciar
-        window.onload = carregarVersiculoAleatorio;
-    </script>
-</body>
-</html>
+        // DADOS: Lista de Livros e qtd de capítulos
+        const livrosBiblia = [
+            {nome: "Gênesis", caps: 50}, {nome: "Êxodo", caps: 40}, {nome: "Levítico", caps: 27}, 
+            {nome: "Números", caps: 36}, {nome: "Deuteronômio", caps: 34}, {nome: "Josué", caps: 24}, 
+            {nome: "Juízes", caps: 21}, {nome: "Rute", caps: 4}, {nome: "1 Samuel", caps: 31}, 
+            {nome: "2 Samuel", caps: 24}, {nome: "1 Reis", caps: 22}, {nome: "2 Reis", caps: 25}, 
+            {nome: "1 Crônicas", caps: 29}, {nome: "2 Crônicas", caps: 36}, {nome: "Esdras", caps: 10}, 
+            {nome: "Neemias", caps: 13}, {nome: "Ester", caps: 10}, {nome: "Jó", caps: 42}, 
+            {nome: "Salmos", caps: 150}, {nome: "Provérbios", caps: 31}, {nome: "Eclesiastes", caps: 12}, 
+            {nome: "Cânticos", caps: 8}, {nome: "Isaías", caps: 66}, {nome: "Jeremias", caps: 52}, 
+            {nome: "Lamentações", caps: 5}, {nome: "Ezequiel", caps: 48}, {nome: "Daniel", caps: 12}, 
+            {nome: "Oseias", caps: 14}, {nome: "Joel", caps: 3}, {nome: "Amós", caps: 9}, 
+            {nome: "Obadias", caps: 1}, {nome: "Jonas", caps: 4}, {nome: "Miqueias", caps: 7}, 
+            {nome: "Naum", caps: 3}, {nome: "Habacuque", caps: 3}, {nome: "Sofonias", caps: 3}, 
+            {nome: "Ageu", caps: 2}, {nome: "Zacarias", caps: 14}, {nome: "Malaquias", caps: 4},
+            {nome: "Mateus", caps: 28}, {nome: "Marcos", caps: 16}, {nome: "Lucas", caps: 24}, 
+            {nome: "João", caps: 21}, {nome: "Atos", caps: 28}, {nome: "Romanos", caps: 16}, 
+            {nome: "1 Coríntios", caps: 16}, {nome: "2 Coríntios", caps: 13}, {nome: "Gálatas", caps: 6}, 
+            {nome: "Efésios", caps: 6}, {nome: "Filipenses", caps: 4}, {nome: "Colossenses", caps: 4}, 
+            {nome: "1 Tessalonicenses", caps: 5}, {nome: "2 Tessalonicenses", caps: 3}, {nome: "1 Timóteo", caps: 6}, 
+            {nome: "2 Timóteo", caps: 4}, {nome: "Tito", caps: 3}, {nome: "Filemom", caps: 1},
